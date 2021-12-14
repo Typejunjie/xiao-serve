@@ -9,9 +9,30 @@ const app = express();
 var cors = require('cors')
 app.use(cors())
 
-// 挂载测试
-const read = require('./postServe/read')
+// 挂载post请求处理
+const { read } = require('./flimPromis/_read');
+const { write } = require('./flimPromis/_write');
+const { _delete } = require('./flimPromis/_delete');
+const { revise } = require('./flimPromis/_revise');
+const { userOnLine } = require('./flimPromis/_userKey')
+const { registered } = require('./flimPromis/registered')
+// 接收write请求并写入对应用户数据库
+write(app);
+
+// 接收read请求
 read(app);
+
+// 接收delete请求
+_delete(app)
+
+// 接收revise请求
+revise(app)
+
+// 接收用户登录请求
+userOnLine(app)
+
+// 接受注册
+registered(app)
 
 //var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -32,12 +53,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
